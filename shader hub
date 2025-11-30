@@ -1,115 +1,189 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/0x"))()
-local w1 = library:Window("Ryusai Shader Hub") -- Updated window title
--- Day/Night Controls
-w1:Button(
-    "Set to Day",
-    function()
-        game.Lighting.ClockTime = 12
-        print("Set to Day")
-    end
-) -- Button to set daytime
-w1:Button(
-    "Set to Night",
-    function()
-        game.Lighting.ClockTime = 0
-        print("Set to Night")
-    end
-) -- Button to set nighttime
--- Other Shader/Effect Controls
-w1:Slider(
-    "Brightness",
-    "bright",
-    0,
-    5,
-    function(value)
-        game.Lighting.Brightness = value
-    end,
-    game.Lighting.Brightness -- Default to current value
-) -- Slider for lighting brightness
-w1:Slider(
-    "Fog End",
-    "fogend",
-    100,
-    10000,
-    function(value)
-        game.Lighting.FogEnd = value
-    end,
-    game.Lighting.FogEnd -- Default to current value
-) -- Slider for fog distance
-local bloomInstance
-w1:Toggle(
-    "Bloom Effect",
-    "bloom",
-    false,
-    function(toggled)
-        if toggled then
-            if not bloomInstance then
-                bloomInstance = Instance.new("BloomEffect")
-                bloomInstance.Intensity = 1
-                bloomInstance.Threshold = 0.8
-                bloomInstance.Size = 24
-                bloomInstance.Parent = game.Lighting
-            end
-        else
-            if bloomInstance then
-                bloomInstance:Destroy()
-                bloomInstance = nil
-            end
-        end
-    end
-) -- Toggle for bloom post-processing effect
-local ccInstance
-w1:Toggle(
-    "Color Correction",
-    "cc",
-    false,
-    function(toggled)
-        if toggled then
-            if not ccInstance then
-                ccInstance = Instance.new("ColorCorrectionEffect")
-                ccInstance.Brightness = 0.1
-                ccInstance.Contrast = 0.2
-                ccInstance.Saturation = 0.3
-                ccInstance.TintColor = Color3.fromRGB(255, 200, 200) -- Example tint
-                ccInstance.Parent = game.Lighting
-            end
-        else
-            if ccInstance then
-                ccInstance:Destroy()
-                ccInstance = nil
-            end
-        end
-    end
-) -- Toggle for color correction effect
--- Original Destroy GUI Button
-w1:Button(
-    "Destroy GUI",
-    function()
-        for i, v in pairs(game.CoreGui:GetChildren()) do
-            if v:FindFirstChild("Top") then
-                v:Destroy()
-            end
-        end
-    end
-) -- Text, Callback
-w1:Label("r y u s a i--Shader Hub") -- Updated label
+local w1 = library:Window("Ryusai Shader Hub")
 
--- Toggle bind
-local UserInputService = game:GetService("UserInputService")
+---------------------------------------------------------------------
+-- CUSTOM FUNCTIONS
+---------------------------------------------------------------------
+
+-- Nebula Skyboxes
+local function setNebulaNight()
+    local sky = Instance.new("Sky", game.Lighting)
+    sky.SkyboxBk = "rbxassetid://6614957583"
+    sky.SkyboxDn = "rbxassetid://6614956514"
+    sky.SkyboxFt = "rbxassetid://6614957583"
+    sky.SkyboxLf = "rbxassetid://6614957583"
+    sky.SkyboxRt = "rbxassetid://6614957583"
+    sky.SkyboxUp = "rbxassetid://6614957583"
+    sky.StarCount = 6000
+end
+
+local function setNebulaDay()
+    local sky = Instance.new("Sky", game.Lighting)
+    sky.SkyboxBk = "rbxassetid://6276641223"
+    sky.SkyboxDn = "rbxassetid://6276640673"
+    sky.SkyboxFt = "rbxassetid://6276641223"
+    sky.SkyboxLf = "rbxassetid://6276641223"
+    sky.SkyboxRt = "rbxassetid://6276641223"
+    sky.SkyboxUp = "rbxassetid://6276641471"
+end
+
+---------------------------------------------------------------------
+-- BASIC LIGHTING CONTROLS
+---------------------------------------------------------------------
+
+w1:Button("Set to Day", function()
+    game.Lighting.ClockTime = 12
+end)
+
+w1:Button("Set to Night", function()
+    game.Lighting.ClockTime = 0
+end)
+
+w1:Slider("Brightness", "bright", 0, 5, function(v)
+    game.Lighting.Brightness = v
+end, game.Lighting.Brightness)
+
+w1:Slider("Fog End", "fogend", 100, 10000, function(v)
+    game.Lighting.FogEnd = v
+end, game.Lighting.FogEnd)
+
+---------------------------------------------------------------------
+-- BLOOM EFFECT
+---------------------------------------------------------------------
+local bloomInstance
+
+w1:Toggle("Bloom Effect", "bloom", false, function(t)
+    if t then
+        if not bloomInstance then
+            bloomInstance = Instance.new("BloomEffect")
+            bloomInstance.Intensity = 1.2
+            bloomInstance.Size = 24
+            bloomInstance.Threshold = 0.8
+            bloomInstance.Parent = game.Lighting
+        end
+    else
+        if bloomInstance then bloomInstance:Destroy() bloomInstance = nil end
+    end
+end)
+
+---------------------------------------------------------------------
+-- COLOR CORRECTION
+---------------------------------------------------------------------
+local ccInstance
+
+w1:Toggle("Color Correction", "cc", false, function(t)
+    if t then
+        if not ccInstance then
+            ccInstance = Instance.new("ColorCorrectionEffect")
+            ccInstance.Brightness = 0.15
+            ccInstance.Contrast = 0.3
+            ccInstance.Saturation = 0.2
+            ccInstance.TintColor = Color3.fromRGB(255,200,200)
+            ccInstance.Parent = game.Lighting
+        end
+    else
+        if ccInstance then ccInstance:Destroy() ccInstance = nil end
+    end
+end)
+
+---------------------------------------------------------------------
+-- SUNRAYS
+---------------------------------------------------------------------
+local sun
+
+w1:Toggle("Sun Rays", "sun", false, function(t)
+    if t then
+        if not sun then
+            sun = Instance.new("SunRaysEffect", game.Lighting)
+            sun.Intensity = 0.25
+            sun.Spread = 0.8
+        end
+    else
+        if sun then sun:Destroy() sun = nil end
+    end
+end)
+
+---------------------------------------------------------------------
+-- ATMOSPHERE
+---------------------------------------------------------------------
+local atmos
+
+w1:Toggle("Atmosphere Effect", "atmos", false, function(t)
+    if t then
+        if not atmos then
+            atmos = Instance.new("Atmosphere", game.Lighting)
+            atmos.Density = 0.35
+            atmos.Haze = 1
+            atmos.Glare = 0.5
+            atmos.Color = Color3.fromRGB(200,200,255)
+        end
+    else
+        if atmos then atmos:Destroy() atmos = nil end
+    end
+end)
+
+---------------------------------------------------------------------
+-- NEBULA SKYBOXES
+---------------------------------------------------------------------
+
+w1:Button("Nebula Night Sky", function()
+    setNebulaNight()
+end)
+
+w1:Button("Nebula Day Sky", function()
+    setNebulaDay()
+end)
+
+---------------------------------------------------------------------
+-- DAY/NIGHT CYCLE
+---------------------------------------------------------------------
+
+local cycleEnabled = false
+local cycleSpeed = 1
+
+w1:Toggle("Day/Night Cycle", "cycle", false, function(t)
+    cycleEnabled = t
+    task.spawn(function()
+        while cycleEnabled do
+            game.Lighting.ClockTime += 0.01 * cycleSpeed
+            task.wait(0.03)
+        end
+    end)
+end)
+
+w1:Slider("Cycle Speed", "cyclespeed", 1, 20, function(v)
+    cycleSpeed = v
+end, 1)
+
+---------------------------------------------------------------------
+-- DESTROY GUI
+---------------------------------------------------------------------
+
+w1:Button("Destroy GUI", function()
+    for _,v in pairs(game.CoreGui:GetChildren()) do
+        if v:FindFirstChild("Top") then v:Destroy() end
+    end
+end)
+
+w1:Label("r y u s a i -- Shader Hub")
+
+---------------------------------------------------------------------
+-- GUI TOGGLE HOTKEY (Right Ctrl)
+---------------------------------------------------------------------
+
+local UIS = game:GetService("UserInputService")
 local toggleKey = Enum.KeyCode.RightControl
 local mainGui
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == toggleKey then
+
+UIS.InputBegan:Connect(function(input, gp)
+    if not gp and input.KeyCode == toggleKey then
         if not mainGui then
-            for _, v in pairs(game:GetService("CoreGui"):GetChildren()) do
+            for _, v in pairs(game.CoreGui:GetChildren()) do
                 if v:IsA("ScreenGui") and v:FindFirstChild("Top") then
                     mainGui = v
-                    break
                 end
             end
         end
-        if mainGui then
-            mainGui.Enabled = not mainGui.Enabled
-        end
+        if mainGui then mainGui.Enabled = not mainGui.Enabled end
     end
 end)
