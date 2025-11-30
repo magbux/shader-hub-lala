@@ -1,5 +1,5 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/0x"))()
-local w1 = library:Window("Shader Hub") -- Updated window title
+local w1 = library:Window("Ryusai Shader Hub") -- Updated window title
 
 -- Day/Night Controls
 w1:Button(
