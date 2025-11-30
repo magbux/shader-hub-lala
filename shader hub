@@ -1,6 +1,5 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/0x"))()
 local w1 = library:Window("Ryusai Shader Hub") -- Updated window title
-
 -- Day/Night Controls
 w1:Button(
     "Set to Day",
@@ -9,7 +8,6 @@ w1:Button(
         print("Set to Day")
     end
 ) -- Button to set daytime
-
 w1:Button(
     "Set to Night",
     function()
@@ -17,28 +15,6 @@ w1:Button(
         print("Set to Night")
     end
 ) -- Button to set nighttime
-
-local cycleEnabled = false
-local cycleConnection
-w1:Toggle(
-    "Day/Night Cycle",
-    "cycle",
-    false,
-    function(toggled)
-        cycleEnabled = toggled
-        if toggled then
-            cycleConnection = game:GetService("RunService").Heartbeat:Connect(function(delta)
-                game.Lighting.ClockTime = (game.Lighting.ClockTime + delta * 0.5) % 24  -- Adjust speed with multiplier
-            end)
-        else
-            if cycleConnection then
-                cycleConnection:Disconnect()
-                cycleConnection = nil
-            end
-        end
-    end
-) -- Toggle for automatic day/night cycle
-
 -- Other Shader/Effect Controls
 w1:Slider(
     "Brightness",
@@ -48,9 +24,8 @@ w1:Slider(
     function(value)
         game.Lighting.Brightness = value
     end,
-    game.Lighting.Brightness  -- Default to current value
+    game.Lighting.Brightness -- Default to current value
 ) -- Slider for lighting brightness
-
 w1:Slider(
     "Fog End",
     "fogend",
@@ -59,9 +34,8 @@ w1:Slider(
     function(value)
         game.Lighting.FogEnd = value
     end,
-    game.Lighting.FogEnd  -- Default to current value
+    game.Lighting.FogEnd -- Default to current value
 ) -- Slider for fog distance
-
 local bloomInstance
 w1:Toggle(
     "Bloom Effect",
@@ -84,7 +58,6 @@ w1:Toggle(
         end
     end
 ) -- Toggle for bloom post-processing effect
-
 local ccInstance
 w1:Toggle(
     "Color Correction",
@@ -97,7 +70,7 @@ w1:Toggle(
                 ccInstance.Brightness = 0.1
                 ccInstance.Contrast = 0.2
                 ccInstance.Saturation = 0.3
-                ccInstance.TintColor = Color3.fromRGB(255, 200, 200)  -- Example tint
+                ccInstance.TintColor = Color3.fromRGB(255, 200, 200) -- Example tint
                 ccInstance.Parent = game.Lighting
             end
         else
@@ -108,7 +81,6 @@ w1:Toggle(
         end
     end
 ) -- Toggle for color correction effect
-
 -- Original Destroy GUI Button
 w1:Button(
     "Destroy GUI",
@@ -120,5 +92,24 @@ w1:Button(
         end
     end
 ) -- Text, Callback
-
 w1:Label("r y u s a i--Shader Hub") -- Updated label
+
+-- Toggle bind
+local UserInputService = game:GetService("UserInputService")
+local toggleKey = Enum.KeyCode.RightControl
+local mainGui
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == toggleKey then
+        if not mainGui then
+            for _, v in pairs(game:GetService("CoreGui"):GetChildren()) do
+                if v:IsA("ScreenGui") and v:FindFirstChild("Top") then
+                    mainGui = v
+                    break
+                end
+            end
+        end
+        if mainGui then
+            mainGui.Enabled = not mainGui.Enabled
+        end
+    end
+end)
