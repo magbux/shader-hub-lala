@@ -1,57 +1,27 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/0x"))()
 local w1 = library:Window("Ryusai Shader Hub")
-
 ---------------------------------------------------------------------
 -- CUSTOM FUNCTIONS
 ---------------------------------------------------------------------
-
--- Nebula Skyboxes
-local function setNebulaNight()
-    local sky = Instance.new("Sky", game.Lighting)
-    sky.SkyboxBk = "rbxassetid://6614957583"
-    sky.SkyboxDn = "rbxassetid://6614956514"
-    sky.SkyboxFt = "rbxassetid://6614957583"
-    sky.SkyboxLf = "rbxassetid://6614957583"
-    sky.SkyboxRt = "rbxassetid://6614957583"
-    sky.SkyboxUp = "rbxassetid://6614957583"
-    sky.StarCount = 6000
-end
-
-local function setNebulaDay()
-    local sky = Instance.new("Sky", game.Lighting)
-    sky.SkyboxBk = "rbxassetid://6276641223"
-    sky.SkyboxDn = "rbxassetid://6276640673"
-    sky.SkyboxFt = "rbxassetid://6276641223"
-    sky.SkyboxLf = "rbxassetid://6276641223"
-    sky.SkyboxRt = "rbxassetid://6276641223"
-    sky.SkyboxUp = "rbxassetid://6276641471"
-end
-
 ---------------------------------------------------------------------
 -- BASIC LIGHTING CONTROLS
 ---------------------------------------------------------------------
-
 w1:Button("Set to Day", function()
     game.Lighting.ClockTime = 12
 end)
-
 w1:Button("Set to Night", function()
     game.Lighting.ClockTime = 0
 end)
-
 w1:Slider("Brightness", "bright", 0, 5, function(v)
     game.Lighting.Brightness = v
 end, game.Lighting.Brightness)
-
 w1:Slider("Fog End", "fogend", 100, 10000, function(v)
     game.Lighting.FogEnd = v
 end, game.Lighting.FogEnd)
-
 ---------------------------------------------------------------------
 -- BLOOM EFFECT
 ---------------------------------------------------------------------
 local bloomInstance
-
 w1:Toggle("Bloom Effect", "bloom", false, function(t)
     if t then
         if not bloomInstance then
@@ -65,12 +35,10 @@ w1:Toggle("Bloom Effect", "bloom", false, function(t)
         if bloomInstance then bloomInstance:Destroy() bloomInstance = nil end
     end
 end)
-
 ---------------------------------------------------------------------
 -- COLOR CORRECTION
 ---------------------------------------------------------------------
 local ccInstance
-
 w1:Toggle("Color Correction", "cc", false, function(t)
     if t then
         if not ccInstance then
@@ -85,12 +53,10 @@ w1:Toggle("Color Correction", "cc", false, function(t)
         if ccInstance then ccInstance:Destroy() ccInstance = nil end
     end
 end)
-
 ---------------------------------------------------------------------
 -- SUNRAYS
 ---------------------------------------------------------------------
 local sun
-
 w1:Toggle("Sun Rays", "sun", false, function(t)
     if t then
         if not sun then
@@ -102,12 +68,10 @@ w1:Toggle("Sun Rays", "sun", false, function(t)
         if sun then sun:Destroy() sun = nil end
     end
 end)
-
 ---------------------------------------------------------------------
 -- ATMOSPHERE
 ---------------------------------------------------------------------
 local atmos
-
 w1:Toggle("Atmosphere Effect", "atmos", false, function(t)
     if t then
         if not atmos then
@@ -121,26 +85,11 @@ w1:Toggle("Atmosphere Effect", "atmos", false, function(t)
         if atmos then atmos:Destroy() atmos = nil end
     end
 end)
-
----------------------------------------------------------------------
--- NEBULA SKYBOXES
----------------------------------------------------------------------
-
-w1:Button("Nebula Night Sky", function()
-    setNebulaNight()
-end)
-
-w1:Button("Nebula Day Sky", function()
-    setNebulaDay()
-end)
-
 ---------------------------------------------------------------------
 -- DAY/NIGHT CYCLE
 ---------------------------------------------------------------------
-
 local cycleEnabled = false
 local cycleSpeed = 1
-
 w1:Toggle("Day/Night Cycle", "cycle", false, function(t)
     cycleEnabled = t
     task.spawn(function()
@@ -150,16 +99,13 @@ w1:Toggle("Day/Night Cycle", "cycle", false, function(t)
         end
     end)
 end)
-
 w1:Slider("Cycle Speed", "cyclespeed", 1, 20, function(v)
     cycleSpeed = v
 end, 1)
-
 ---------------------------------------------------------------------
 -- DEPTH OF FIELD EFFECT
 ---------------------------------------------------------------------
 local dofInstance
-
 w1:Toggle("Depth of Field", "dof", false, function(t)
     if t then
         if not dofInstance then
@@ -173,15 +119,12 @@ w1:Toggle("Depth of Field", "dof", false, function(t)
         if dofInstance then dofInstance:Destroy() dofInstance = nil end
     end
 end)
-
 w1:Slider("DOF Focus Distance", "dofdist", 1, 500, function(v)
     if dofInstance then dofInstance.FocusDistance = v end
 end, 50)
-
 ---------------------------------------------------------------------
 -- CHARACTER EFFECTS
 ---------------------------------------------------------------------
-
 w1:Button("Rainbow Character", function()
     local char = game.Players.LocalPlayer.Character
     if char then
@@ -202,7 +145,6 @@ w1:Button("Rainbow Character", function()
         end
     end
 end)
-
 w1:Button("Glow Effect", function()
     local char = game.Players.LocalPlayer.Character
     if char then
@@ -214,7 +156,6 @@ w1:Button("Glow Effect", function()
         end
     end
 end)
-
 w1:Button("Giant Mode (Scale x3)", function()
     local char = game.Players.LocalPlayer.Character
     if char then
@@ -227,7 +168,6 @@ w1:Button("Giant Mode (Scale x3)", function()
         if humanoid then humanoid.HipHeight = humanoid.HipHeight * 3 end
     end
 end)
-
 w1:Button("Tiny Mode (Scale x0.5)", function()
     local char = game.Players.LocalPlayer.Character
     if char then
@@ -240,57 +180,45 @@ w1:Button("Tiny Mode (Scale x0.5)", function()
         if humanoid then humanoid.HipHeight = humanoid.HipHeight * 0.5 end
     end
 end)
-
 ---------------------------------------------------------------------
 -- AMBIENT LIGHTING EFFECTS
 ---------------------------------------------------------------------
-
 w1:Button("Purple Ambience", function()
     game.Lighting.Ambient = Color3.fromRGB(180, 100, 255)
     game.Lighting.OutdoorAmbient = Color3.fromRGB(180, 100, 255)
 end)
-
 w1:Button("Green Ambience", function()
     game.Lighting.Ambient = Color3.fromRGB(100, 255, 100)
     game.Lighting.OutdoorAmbient = Color3.fromRGB(100, 255, 100)
 end)
-
 w1:Button("Blue Ambience", function()
     game.Lighting.Ambient = Color3.fromRGB(100, 150, 255)
     game.Lighting.OutdoorAmbient = Color3.fromRGB(100, 150, 255)
 end)
-
 w1:Button("Red Ambience", function()
     game.Lighting.Ambient = Color3.fromRGB(255, 100, 100)
     game.Lighting.OutdoorAmbient = Color3.fromRGB(255, 100, 100)
 end)
-
 w1:Button("Normal Ambience", function()
     game.Lighting.Ambient = Color3.fromRGB(128, 128, 128)
     game.Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
 end)
-
 ---------------------------------------------------------------------
 -- DESTROY GUI
 ---------------------------------------------------------------------
-
 w1:Button("Destroy GUI", function()
     for _,v in pairs(game.CoreGui:GetChildren()) do
         if v:FindFirstChild("Top") then v:Destroy() end
     end
 end)
-
-w1:Label("r y u s a i -- Shader Hub v2.0")
-
+w1:Label("r y u s a i -- Shader Hub v2.0 ts so ahh btw")
 ---------------------------------------------------------------------
 -- GUI TOGGLE HOTKEY (CUSTOMIZABLE)
 ---------------------------------------------------------------------
-
 local UIS = game:GetService("UserInputService")
 local toggleKey = Enum.KeyCode.RightControl
 local mainGui
 local currentKeyIndex = 1
-
 local keyOptions = {
     Enum.KeyCode.RightControl,
     Enum.KeyCode.LeftControl,
@@ -313,7 +241,6 @@ local keyOptions = {
     Enum.KeyCode.Home,
     Enum.KeyCode.End,
 }
-
 local keyNames = {
     "Right Ctrl",
     "Left Ctrl",
@@ -336,13 +263,11 @@ local keyNames = {
     "Home",
     "End",
 }
-
 w1:Dropdown("Toggle Key", "togglekey", keyNames, 1, function(selected, index)
     toggleKey = keyOptions[index]
     currentKeyIndex = index
     print("Toggle key changed to: " .. keyNames[index])
 end)
-
 UIS.InputBegan:Connect(function(input, gp)
     if not gp and input.KeyCode == toggleKey then
         if not mainGui then
