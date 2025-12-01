@@ -156,6 +156,121 @@ w1:Slider("Cycle Speed", "cyclespeed", 1, 20, function(v)
 end, 1)
 
 ---------------------------------------------------------------------
+-- DEPTH OF FIELD EFFECT
+---------------------------------------------------------------------
+local dofInstance
+
+w1:Toggle("Depth of Field", "dof", false, function(t)
+    if t then
+        if not dofInstance then
+            dofInstance = Instance.new("DepthOfFieldEffect")
+            dofInstance.FocusDistance = 50
+            dofInstance.FocusLength = 10
+            dofInstance.InFocusRadius = 30
+            dofInstance.Parent = game.Lighting
+        end
+    else
+        if dofInstance then dofInstance:Destroy() dofInstance = nil end
+    end
+end)
+
+w1:Slider("DOF Focus Distance", "dofdist", 1, 500, function(v)
+    if dofInstance then dofInstance.FocusDistance = v end
+end, 50)
+
+---------------------------------------------------------------------
+-- CHARACTER EFFECTS
+---------------------------------------------------------------------
+
+w1:Button("Rainbow Character", function()
+    local char = game.Players.LocalPlayer.Character
+    if char then
+        local colors = {
+            Color3.fromRGB(255,0,0), Color3.fromRGB(255,127,0), Color3.fromRGB(255,255,0),
+            Color3.fromRGB(0,255,0), Color3.fromRGB(0,0,255), Color3.fromRGB(75,0,130),
+            Color3.fromRGB(148,0,211)
+        }
+        local i = 1
+        while char.Parent do
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.Color = colors[(i % #colors) + 1]
+                end
+            end
+            i = i + 1
+            task.wait(0.2)
+        end
+    end
+end)
+
+w1:Button("Glow Effect", function()
+    local char = game.Players.LocalPlayer.Character
+    if char then
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Material = Enum.Material.Neon
+                part.Color = Color3.fromRGB(255, 200, 124)
+            end
+        end
+    end
+end)
+
+w1:Button("Giant Mode (Scale x3)", function()
+    local char = game.Players.LocalPlayer.Character
+    if char then
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Size = part.Size * 3
+            end
+        end
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if humanoid then humanoid.HipHeight = humanoid.HipHeight * 3 end
+    end
+end)
+
+w1:Button("Tiny Mode (Scale x0.5)", function()
+    local char = game.Players.LocalPlayer.Character
+    if char then
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Size = part.Size * 0.5
+            end
+        end
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if humanoid then humanoid.HipHeight = humanoid.HipHeight * 0.5 end
+    end
+end)
+
+---------------------------------------------------------------------
+-- AMBIENT LIGHTING EFFECTS
+---------------------------------------------------------------------
+
+w1:Button("Purple Ambience", function()
+    game.Lighting.Ambient = Color3.fromRGB(180, 100, 255)
+    game.Lighting.OutdoorAmbient = Color3.fromRGB(180, 100, 255)
+end)
+
+w1:Button("Green Ambience", function()
+    game.Lighting.Ambient = Color3.fromRGB(100, 255, 100)
+    game.Lighting.OutdoorAmbient = Color3.fromRGB(100, 255, 100)
+end)
+
+w1:Button("Blue Ambience", function()
+    game.Lighting.Ambient = Color3.fromRGB(100, 150, 255)
+    game.Lighting.OutdoorAmbient = Color3.fromRGB(100, 150, 255)
+end)
+
+w1:Button("Red Ambience", function()
+    game.Lighting.Ambient = Color3.fromRGB(255, 100, 100)
+    game.Lighting.OutdoorAmbient = Color3.fromRGB(255, 100, 100)
+end)
+
+w1:Button("Normal Ambience", function()
+    game.Lighting.Ambient = Color3.fromRGB(128, 128, 128)
+    game.Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+end)
+
+---------------------------------------------------------------------
 -- DESTROY GUI
 ---------------------------------------------------------------------
 
@@ -165,15 +280,68 @@ w1:Button("Destroy GUI", function()
     end
 end)
 
-w1:Label("r y u s a i -- Shader Hub")
+w1:Label("r y u s a i -- Shader Hub v2.0")
 
 ---------------------------------------------------------------------
--- GUI TOGGLE HOTKEY (Right Ctrl)
+-- GUI TOGGLE HOTKEY (CUSTOMIZABLE)
 ---------------------------------------------------------------------
 
 local UIS = game:GetService("UserInputService")
 local toggleKey = Enum.KeyCode.RightControl
 local mainGui
+local currentKeyIndex = 1
+
+local keyOptions = {
+    Enum.KeyCode.RightControl,
+    Enum.KeyCode.LeftControl,
+    Enum.KeyCode.F1,
+    Enum.KeyCode.F2,
+    Enum.KeyCode.F3,
+    Enum.KeyCode.F4,
+    Enum.KeyCode.F5,
+    Enum.KeyCode.F6,
+    Enum.KeyCode.F7,
+    Enum.KeyCode.F8,
+    Enum.KeyCode.F9,
+    Enum.KeyCode.F10,
+    Enum.KeyCode.F11,
+    Enum.KeyCode.F12,
+    Enum.KeyCode.Tab,
+    Enum.KeyCode.BackQuote,
+    Enum.KeyCode.Insert,
+    Enum.KeyCode.Delete,
+    Enum.KeyCode.Home,
+    Enum.KeyCode.End,
+}
+
+local keyNames = {
+    "Right Ctrl",
+    "Left Ctrl",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    "Tab",
+    "Backtick (`)",
+    "Insert",
+    "Delete",
+    "Home",
+    "End",
+}
+
+w1:Dropdown("Toggle Key", "togglekey", keyNames, 1, function(selected, index)
+    toggleKey = keyOptions[index]
+    currentKeyIndex = index
+    print("Toggle key changed to: " .. keyNames[index])
+end)
 
 UIS.InputBegan:Connect(function(input, gp)
     if not gp and input.KeyCode == toggleKey then
